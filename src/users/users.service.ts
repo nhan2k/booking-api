@@ -18,10 +18,7 @@ export class UsersService {
 
       return await this.userRepository.save(newUser);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -60,10 +57,7 @@ export class UsersService {
 
       return await this.userRepository.save(update);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -73,10 +67,7 @@ export class UsersService {
 
       return await this.userRepository.remove(user);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -38,10 +38,7 @@ export class RoomService {
 
       return await this.roomRepository.save(newRoom);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -82,10 +79,7 @@ export class RoomService {
 
       return this.roomRepository.save(update);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -95,10 +89,7 @@ export class RoomService {
 
       return await this.roomRepository.remove(room);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 }

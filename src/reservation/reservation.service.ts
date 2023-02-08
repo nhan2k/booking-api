@@ -47,10 +47,7 @@ export class ReservationService {
 
       return await this.reservationRepository.save(newReservation);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -95,10 +92,7 @@ export class ReservationService {
 
       return await this.reservationRepository.save(update);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -108,10 +102,7 @@ export class ReservationService {
 
       return await this.reservationRepository.remove(hotel);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 }

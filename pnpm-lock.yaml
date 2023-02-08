@@ -33,6 +33,7 @@ specifiers:
   tsconfig-paths: 4.1.1
   typeorm: ^0.3.11
   typescript: ^4.7.4
+  zod: ^3.20.2
 
 dependencies:
   '@nestjs/common': 9.3.1_welcnyot5bzd5wa2aovbkxpi4i
@@ -46,6 +47,7 @@ dependencies:
   reflect-metadata: 0.1.13
   rxjs: 7.8.0
   typeorm: 0.3.11_wbpsjvld6yfbj4g3lqlhbqygaq
+  zod: 3.20.2
 
 devDependencies:
   '@nestjs/cli': 9.1.9
@@ -5189,3 +5191,7 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zod/3.20.2:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+    dev: false

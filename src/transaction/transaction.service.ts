@@ -19,10 +19,7 @@ export class TransactionService {
 
       return await this.transactionRepository.save(newTransaction);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -61,10 +58,7 @@ export class TransactionService {
 
       return await this.transactionRepository.save(update);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -74,10 +68,7 @@ export class TransactionService {
 
       return await this.transactionRepository.remove(transaction);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 }

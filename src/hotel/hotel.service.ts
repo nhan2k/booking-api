@@ -18,10 +18,7 @@ export class HotelService {
 
       return await this.hotelsRepository.save(newHotel);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -62,10 +59,7 @@ export class HotelService {
 
       return await this.hotelsRepository.save(update);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -75,10 +69,7 @@ export class HotelService {
 
       return await this.hotelsRepository.remove(hotel);
     } catch (error) {
-      throw new HttpException(
-        { message: error.message },
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 }

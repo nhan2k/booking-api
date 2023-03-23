@@ -12,6 +12,9 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
+  password: string;
+
+  @IsNotEmpty()
   @IsPhoneNumber('VN')
   phone_number: string;
 

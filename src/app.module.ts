@@ -9,6 +9,7 @@ import { RoomModule } from './room/room.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { UsersModule } from './users/users.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TransactionModule } from './transaction/transaction.module';
     ReservationModule,
     UsersModule,
     TransactionModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

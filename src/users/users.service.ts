@@ -4,21 +4,41 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
+
+  async findOneAuth(email: string): Promise<any | undefined> {
+    return this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+  }
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const newUser = this.userRepository.create(createUserDto);
+      const saltRounds = 10;
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hash = bcrypt.hashSync(createUserDto.password, salt);
+      // Store hash in your password DB.
+
+      const newUser = this.userRepository.create({
+        ...createUserDto,
+        password: hash,
+      });
 
       return await this.userRepository.save(newUser);
     } catch (error) {
-      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: 'Infomation invalid' },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -48,9 +68,9 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
-      let user = await this.findOne(id);
+      const user: User = await this.findOne(id);
 
-      let update = {
+      const update = {
         ...user,
         ...updateUserDto,
       };

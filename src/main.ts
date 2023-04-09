@@ -5,7 +5,7 @@ import * as express from 'express';
 import * as path from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { cors: { origin: '*' } });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

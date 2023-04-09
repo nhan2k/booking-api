@@ -13,9 +13,10 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { extname } from 'path';
 import * as fs from 'fs';
 import { LoggerMiddleware } from './logger.middleware';
+import * as helmet from 'helmet';
 
 @Module({
   imports: [

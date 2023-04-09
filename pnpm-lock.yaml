@@ -40,6 +40,9 @@ dependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
+  helmet:
+    specifier: ^6.1.1
+    version: 6.1.1
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -3238,6 +3241,11 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
+
+  /helmet@6.1.1:
+    resolution: {integrity: sha512-+lpiPR2U5Z9gZnJiLEhK+ta7Z+NSbWyyQCdOP051T8vpPOfd4I5p66cdTgt5hsRXYbJjWNwmga3zjwTHr2rSpw==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /hexoid@1.0.0:
     resolution: {integrity: sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==}

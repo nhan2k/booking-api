@@ -25,7 +25,6 @@ export class RoomService {
   ): Promise<Room> {
     try {
       if (!file.path) {
-        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Not Found IMG' },
           HttpStatus.BAD_REQUEST,

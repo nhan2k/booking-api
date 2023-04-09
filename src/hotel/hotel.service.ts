@@ -22,7 +22,6 @@ export class HotelService {
   ): Promise<Hotel> {
     try {
       if (!file.path) {
-        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Not Found IMG' },
           HttpStatus.BAD_REQUEST,
@@ -39,7 +38,6 @@ export class HotelService {
         },
       });
       if (!userFind) {
-        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Not Found User' },
           HttpStatus.BAD_REQUEST,

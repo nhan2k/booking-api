@@ -16,7 +16,6 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
 import { LoggerMiddleware } from './logger.middleware';
-import helmet from 'helmet';
 
 @Module({
   imports: [
@@ -87,7 +86,7 @@ export class AppModule {
   constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer, app: any) {
     consumer
-      .apply(LoggerMiddleware, helmet())
+      .apply(LoggerMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

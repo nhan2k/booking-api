@@ -23,10 +23,10 @@ import { LoggerMiddleware } from './logger.middleware';
     TypeOrmModule.forRoot({
       type: 'postgres',
       port: 5432,
-      host: 'dpg-cge7ic82qv21ab3jjh30-a',
-      username: 'booking_un5l_user',
-      password: 'hCjUzY6Ox73D7ZRWLiCyvCrGuBwostL3',
-      database: 'booking_un5l',
+      host: 'tiny.db.elephantsql.com',
+      username: 'bsxvlpwr',
+      password: 'WcsxwB_WWRytyctwbOT7YJPMvnWqvWIR',
+      database: 'bsxvlpwr',
       entities: ['dist/**/*/*.entity.js'],
       synchronize: true,
       // ssl: true,
@@ -42,7 +42,6 @@ import { LoggerMiddleware } from './logger.middleware';
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
-          console.log('🚀 ~ file: app.module.ts:45 ~ file:', file);
           const name = file.originalname.split('.')[0];
           const fileExtName = extname(file.originalname);
           const randomName = Array(4)

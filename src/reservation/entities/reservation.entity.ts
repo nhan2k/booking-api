@@ -20,7 +20,7 @@ export class Reservation {
   reservation_id: number;
 
   @Column()
-  guest_list: string;
+  guest_list: number;
 
   @Column({ type: 'timestamp' })
   check_in: Date;

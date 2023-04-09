@@ -8,5 +8,5 @@ export class CreateHotelDto {
   location: string;
 
   @IsNotEmpty()
-  owner: string;
+  province: string;
 }

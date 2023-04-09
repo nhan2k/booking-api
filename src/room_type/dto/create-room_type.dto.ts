@@ -8,13 +8,13 @@ export class CreateRoomTypeDto {
   capacity: number;
 
   @IsNotEmpty()
-  wifi: number;
+  wifi: boolean;
 
   @IsNotEmpty()
-  AC: number;
+  AC: boolean;
 
   @IsNotEmpty()
-  heater: number;
+  heater: boolean;
 
   @IsNotEmpty()
   rating: number;

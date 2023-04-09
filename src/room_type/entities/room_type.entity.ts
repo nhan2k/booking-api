@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { Room } from 'src/room/entities/room.entity';
 import {
   Column,
@@ -15,25 +16,25 @@ export class RoomType {
   @PrimaryGeneratedColumn()
   room_type_id: number;
 
-  @Column()
+  @Column({ nullable: true })
   prize: number;
 
-  @Column()
+  @Column({ nullable: true })
   capacity: number;
 
-  @Column()
-  wifi: number;
+  @Column({ default: false })
+  wifi: boolean;
 
-  @Column()
-  AC: number;
+  @Column({ default: false })
+  AC: boolean;
 
-  @Column()
-  heater: number;
+  @Column({ default: false })
+  heater: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   rating: number;
 
-  @Column()
+  @Column({ nullable: true })
   other_facilities: string;
 
   @ManyToMany(() => Room, (room) => room.__roomTypes__)

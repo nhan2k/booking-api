@@ -1,46 +1,20 @@
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinDate,
-} from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsDateString, IsNotEmpty } from 'class-validator';
 
 export class CreateReservationDto {
   @IsNotEmpty()
-  guest_list: string;
-
-  @IsOptional()
-  @Transform(({ value }) => new Date(value))
-  @IsDate()
-  @MinDate(new Date())
-  check_in?: Date;
+  guest_list: number;
 
   @IsNotEmpty()
-  @Transform(({ value }) => new Date(value))
-  @IsDate()
-  @MinDate(new Date())
+  @IsDateString()
+  check_in: Date;
+
+  @IsNotEmpty()
+  @IsDateString()
   checkout: Date;
 
   @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
   balance_amount: number;
 
   @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
   hotel_id: number;
-
-  @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
-  transaction_id: number;
-
-  @IsNotEmpty()
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
-  user_id: number;
 }

@@ -6,23 +6,45 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
+@UseGuards(JwtAuthGuard)
 @Controller('hotel')
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
   @Post()
-  async create(@Body() createHotelDto: CreateHotelDto) {
-    return await this.hotelService.create(createHotelDto);
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
+    @Body() createHotelDto: CreateHotelDto,
+    @Request() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.hotelService.create(createHotelDto, req.user, file);
   }
 
   @Get()
   async findAll() {
     return await this.hotelService.findAll();
+  }
+
+  @Get('my')
+  async findMyHotel(@Request() req) {
+    return await this.hotelService.findMyHotel(req.user);
+  }
+
+  @Get('my/:hotel_id')
+  async findMyHotelById(@Request() req, @Param('hotel_id') hotel_id: number) {
+    return await this.hotelService.findMyHotelById(req.user, hotel_id);
   }
 
   @Get(':id')

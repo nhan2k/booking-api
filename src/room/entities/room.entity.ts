@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { RoomType } from 'src/room_type/entities/room_type.entity';
 import {
@@ -20,11 +21,16 @@ export class Room {
   @Column()
   capacity: number;
 
-  @Column()
+  @Column({ type: 'double precision' })
   prize: number;
 
   @Column()
   facilities: string;
+
+  @Column({
+    nullable: true,
+  })
+  imgPath: string;
 
   @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
   @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])

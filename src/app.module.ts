@@ -11,6 +11,10 @@ import { UsersModule } from './users/users.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import * as fs from 'fs';
 
 @Module({
   imports: [
@@ -24,13 +28,48 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       entities: ['dist/**/*/*.entity.js'],
       synchronize: true,
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
+      // ssl: true,
+      // extra: {
+      //   ssl: {
+      //     rejectUnauthorized: false,
+      //   },
+      // },
     }),
+
+    MulterModule.register({
+      dest: './uploads',
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          console.log('🚀 ~ file: app.module.ts:45 ~ file:', file);
+          const name = file.originalname.split('.')[0];
+          const fileExtName = extname(file.originalname);
+          const randomName = Array(4)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          if (req.url.includes('hotel')) {
+            const folderName = './uploads/hotel';
+
+            if (!fs.existsSync(folderName)) {
+              fs.mkdirSync(folderName);
+            }
+            return callback(null, `hotel/${name}-${randomName}${fileExtName}`);
+          }
+
+          if (req.url.includes('room')) {
+            const folderName = './uploads/room';
+
+            if (!fs.existsSync(folderName)) {
+              fs.mkdirSync(folderName);
+            }
+            return callback(null, `room/${name}-${randomName}${fileExtName}`);
+          }
+          callback(null, `${name}-${randomName}${fileExtName}`);
+        },
+      }),
+    }),
+
     HotelModule,
     RoomTypeModule,
     RoomModule,

@@ -13,6 +13,14 @@ export class CreateRoomDto {
   @IsNotEmpty()
   hotel_id: number;
 
-  @IsNotEmpty()
-  roomTypes_id: number;
+  wifi: boolean;
+
+  AC: boolean;
+
+  heater: boolean;
+
+  other_facilities: string;
+
+  // @IsNotEmpty()
+  imgPath: string;
 }

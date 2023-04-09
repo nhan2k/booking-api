@@ -6,23 +6,34 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Room } from 'src/room/entities/room.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
+import { User } from 'src/users/entities/user.entity';
+import * as moment from 'moment';
 
 @Entity()
 export class Hotel {
   @PrimaryGeneratedColumn()
   hotel_id: number;
 
-  @Column()
+  @Column({ unique: true })
   hotel_name: string;
 
   @Column()
   location: string;
 
-  @Column({ type: 'text' })
-  owner: string;
+  @Column()
+  province: string;
+
+  @Column()
+  imgPath: string;
+
+  @ManyToOne(() => User, (user) => user.__hotels__)
+  @JoinColumn([{ name: 'user_id', referencedColumnName: 'user_id' }])
+  __user__: User;
 
   @OneToMany(() => Room, (room) => room.__hotel__, {
     cascade: true,

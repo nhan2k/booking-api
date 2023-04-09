@@ -1,3 +1,6 @@
+import { Exclude, Expose } from 'class-transformer';
+import * as moment from 'moment';
+import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
 import {
   Column,
@@ -12,6 +15,10 @@ import {
 
 @Entity()
 export class User {
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+  }
+
   @PrimaryGeneratedColumn()
   user_id: number;
 
@@ -25,6 +32,7 @@ export class User {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({ unique: true })
@@ -33,11 +41,20 @@ export class User {
   @Column({ nullable: true })
   location: string;
 
+  @Column({ default: 'user' })
+  role: string;
+
   @OneToMany(() => Reservation, (reservation) => reservation.__user__, {
     cascade: true,
   })
   @JoinColumn([{ name: 'user_id', referencedColumnName: 'user_id' }])
   __reservations__: Reservation[];
+
+  @OneToMany(() => Hotel, (hotel) => hotel.__user__, {
+    cascade: true,
+  })
+  @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])
+  __hotels__: Hotel[];
 
   @CreateDateColumn()
   created_at: Date; // Creation date
@@ -47,4 +64,9 @@ export class User {
 
   @DeleteDateColumn()
   deleted_at: Date; // Deletion date
+
+  @Expose()
+  get full_name(): string {
+    return `${this.first_name} ${this.last_name}`;
+  }
 }

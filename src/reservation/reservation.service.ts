@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation } from './entities/reservation.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class ReservationService {
@@ -21,23 +22,55 @@ export class ReservationService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createReservationDto: CreateReservationDto) {
+  async create(createReservationDto: CreateReservationDto, user_id: number) {
     try {
-      const newReservation =
-        this.reservationRepository.create(createReservationDto);
+      if (moment(createReservationDto.check_in).isBefore(moment())) {
+        throw new HttpException(
+          { message: 'Reservation checkin must be better or equal than today' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const checkReservation = await this.reservationRepository.find({
+        where: {
+          __hotel__: {
+            hotel_id: createReservationDto.hotel_id,
+          },
+          check_in: LessThan(createReservationDto.checkout),
+          checkout: MoreThan(createReservationDto.check_in),
+        },
+      });
+
+      if (checkReservation.length > 0) {
+        throw new HttpException(
+          { message: 'Reservation is exists' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const formatData = {
+        ...createReservationDto,
+        check_in: moment(createReservationDto.check_in)
+          .add(12, 'hours')
+          .toDate(),
+        checkout: moment(createReservationDto.checkout)
+          .add(12, 'hours')
+          .toDate(),
+        created_at: moment(new Date()).add(12, 'hours').toDate(),
+      };
+
+      const newReservation = this.reservationRepository.create(formatData);
       const hotel = await this.hotelRepository.findOneOrFail({
         where: {
-          hotel_id: createReservationDto.hotel_id,
+          hotel_id: formatData.hotel_id,
         },
       });
-      const transaction = await this.transactionRepository.findOneOrFail({
-        where: {
-          transaction_id: createReservationDto.transaction_id,
-        },
-      });
+      const transaction = new Transaction();
+      transaction.amount = formatData.balance_amount;
+
       const user = await this.userRepository.findOneOrFail({
         where: {
-          user_id: createReservationDto.user_id,
+          user_id,
         },
       });
 
@@ -51,14 +84,28 @@ export class ReservationService {
     }
   }
 
-  async findAll() {
-    return await this.reservationRepository.find({
+  async findAll(user_id: number) {
+    if (!user_id) {
+      throw new HttpException(
+        { message: 'Could not find user' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const response = await this.reservationRepository.find({
+      where: {
+        __user__: {
+          user_id: user_id,
+        },
+      },
+      order: { created_at: 'DESC' },
       relations: {
         __hotel__: true,
         __transactions__: true,
         __user__: true,
       },
     });
+
+    return response;
   }
 
   async findOne(id: number) {

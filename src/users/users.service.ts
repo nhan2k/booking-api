@@ -21,7 +21,7 @@ export class UsersService {
     });
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async register(createUserDto: CreateUserDto) {
     try {
       const saltRounds = 10;
       const salt = bcrypt.genSaltSync(saltRounds);
@@ -36,7 +36,7 @@ export class UsersService {
       return await this.userRepository.save(newUser);
     } catch (error) {
       throw new HttpException(
-        { message: 'Infomation invalid' },
+        { message: 'Credential invalid email or phone' },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -50,13 +50,11 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(user: any) {
     try {
-      return await this.userRepository.findOneOrFail({
-        where: { user_id: id },
-        relations: {
-          __reservations__: true,
-        },
+      return await this.userRepository.findOne({
+        where: { user_id: user.userId },
+        select: ['email', 'first_name', 'last_name', 'location', 'role'],
       });
     } catch (error) {
       throw new HttpException(

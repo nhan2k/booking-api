@@ -35,6 +35,7 @@ export class UsersService {
 
       return await this.userRepository.save(newUser);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Credential invalid email or phone' },
         HttpStatus.BAD_REQUEST,
@@ -57,6 +58,7 @@ export class UsersService {
         select: ['email', 'first_name', 'last_name', 'location', 'role'],
       });
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -75,6 +77,7 @@ export class UsersService {
 
       return await this.userRepository.save(update);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -85,6 +88,7 @@ export class UsersService {
 
       return await this.userRepository.remove(user);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

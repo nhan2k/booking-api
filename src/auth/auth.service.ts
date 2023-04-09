@@ -13,6 +13,7 @@ export class AuthService {
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOneAuth(email);
     if (!user) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { reason: 'Not found user' },
         HttpStatus.BAD_REQUEST,

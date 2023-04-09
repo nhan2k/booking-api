@@ -25,6 +25,7 @@ export class ReservationService {
   async create(createReservationDto: CreateReservationDto, user_id: number) {
     try {
       if (moment(createReservationDto.check_in).isBefore(moment())) {
+        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Reservation checkin must be better or equal than today' },
           HttpStatus.BAD_REQUEST,
@@ -42,6 +43,7 @@ export class ReservationService {
       });
 
       if (checkReservation.length > 0) {
+        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Reservation is exists' },
           HttpStatus.BAD_REQUEST,
@@ -80,12 +82,14 @@ export class ReservationService {
 
       return await this.reservationRepository.save(newReservation);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
 
   async findAll(user_id: number) {
     if (!user_id) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find user' },
         HttpStatus.BAD_REQUEST,
@@ -121,6 +125,7 @@ export class ReservationService {
         },
       });
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -139,6 +144,7 @@ export class ReservationService {
 
       return await this.reservationRepository.save(update);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -149,6 +155,7 @@ export class ReservationService {
 
       return await this.reservationRepository.remove(hotel);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

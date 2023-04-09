@@ -19,6 +19,7 @@ export class TransactionService {
 
       return await this.transactionRepository.save(newTransaction);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -40,6 +41,7 @@ export class TransactionService {
         },
       });
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -58,6 +60,7 @@ export class TransactionService {
 
       return await this.transactionRepository.save(update);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -68,6 +71,7 @@ export class TransactionService {
 
       return await this.transactionRepository.remove(transaction);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

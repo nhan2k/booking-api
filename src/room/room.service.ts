@@ -25,6 +25,7 @@ export class RoomService {
   ): Promise<Room> {
     try {
       if (!file.path) {
+        console.error(JSON.stringify(error, null, 4));
         throw new HttpException(
           { message: 'Not Found IMG' },
           HttpStatus.BAD_REQUEST,
@@ -57,6 +58,7 @@ export class RoomService {
 
       return roomSave;
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -147,6 +149,7 @@ export class RoomService {
         },
       });
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -165,6 +168,7 @@ export class RoomService {
 
       return this.roomRepository.save(update);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -175,6 +179,7 @@ export class RoomService {
 
       return await this.roomRepository.remove(room);
     } catch (error) {
+      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

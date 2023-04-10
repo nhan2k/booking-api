@@ -24,12 +24,12 @@ export class Room {
   @Column({ type: 'double precision' })
   prize: number;
 
-  @Column()
-  facilities: string;
-
   @Column({
     nullable: true,
   })
+  facilities: string;
+
+  @Column()
   imgPath: string;
 
   @ManyToOne(() => Hotel, (hotel) => hotel.rooms)

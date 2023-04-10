@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
+import { STATUS } from './enum';
 
 @Injectable()
 export class TransactionService {
@@ -56,6 +57,12 @@ export class TransactionService {
       let update = {
         ...transaction,
         ...updateTransactionDto,
+        status:
+          transaction.status === STATUS.unpaid
+            ? STATUS.paid
+            : transaction.status === STATUS.paid
+            ? STATUS.refunded
+            : STATUS.unpaid,
       };
 
       return await this.transactionRepository.save(update);

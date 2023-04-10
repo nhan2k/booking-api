@@ -23,18 +23,12 @@ import { LoggerMiddleware } from './logger.middleware';
     TypeOrmModule.forRoot({
       type: 'postgres',
       port: 5432,
-      host: 'tiny.db.elephantsql.com',
-      username: 'bsxvlpwr',
-      password: 'WcsxwB_WWRytyctwbOT7YJPMvnWqvWIR',
-      database: 'bsxvlpwr',
+      host: process.env.DB_HOST,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: ['dist/**/*/*.entity.js'],
       synchronize: true,
-      // ssl: true,
-      // extra: {
-      //   ssl: {
-      //     rejectUnauthorized: false,
-      //   },
-      // },
     }),
 
     MulterModule.register({

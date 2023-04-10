@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
 import {
   Column,
@@ -17,6 +16,11 @@ export class Transaction {
 
   @Column()
   amount: number;
+
+  @Column({
+    enum: ['unpaid', 'paid', 'refuned'],
+  })
+  status: string;
 
   @ManyToMany(() => Reservation, (reservation) => reservation.__transactions__)
   __reservations__: Promise<Reservation>;

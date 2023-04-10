@@ -8,6 +8,8 @@ import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation } from './entities/reservation.entity';
 import * as moment from 'moment';
+import { STATUS } from 'src/transaction/enum';
+import { STATUS as STATUS_RESERVE } from './enum/index';
 
 @Injectable()
 export class ReservationService {
@@ -36,6 +38,7 @@ export class ReservationService {
           __hotel__: {
             hotel_id: createReservationDto.hotel_id,
           },
+          status: STATUS_RESERVE.cancelled,
           check_in: LessThan(createReservationDto.checkout),
           checkout: MoreThan(createReservationDto.check_in),
         },
@@ -57,6 +60,8 @@ export class ReservationService {
           .add(12, 'hours')
           .toDate(),
         created_at: moment(new Date()).add(12, 'hours').toDate(),
+        note: createReservationDto.room_id,
+        status: STATUS_RESERVE.confirmed,
       };
 
       const newReservation = this.reservationRepository.create(formatData);
@@ -67,6 +72,7 @@ export class ReservationService {
       });
       const transaction = new Transaction();
       transaction.amount = formatData.balance_amount;
+      transaction.status = STATUS.unpaid;
 
       const user = await this.userRepository.findOneOrFail({
         where: {
@@ -136,7 +142,12 @@ export class ReservationService {
 
       let update = {
         ...reservation,
-        ...updateReservationDto,
+        status:
+          reservation.status === STATUS_RESERVE.confirmed
+            ? STATUS_RESERVE.pending
+            : reservation.status === STATUS_RESERVE.pending
+            ? STATUS_RESERVE.cancelled
+            : STATUS_RESERVE.completed,
       };
 
       return await this.reservationRepository.save(update);

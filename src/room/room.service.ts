@@ -7,6 +7,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import * as _ from 'lodash';
+import { STATUS } from 'src/reservation/enum';
 
 @Injectable()
 export class RoomService {
@@ -138,7 +139,14 @@ export class RoomService {
   async findOne(id: number) {
     try {
       return await this.roomRepository.findOneOrFail({
-        where: { room_id: id },
+        where: {
+          room_id: id,
+          __hotel__: {
+            __reservations__: {
+              status: STATUS.cancelled,
+            },
+          },
+        },
         relations: {
           __hotel__: {
             __user__: true,

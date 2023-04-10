@@ -16,19 +16,19 @@ export class RoomType {
   @PrimaryGeneratedColumn()
   room_type_id: number;
 
-  @Column({ nullable: true })
+  @Column()
   prize: number;
 
-  @Column({ nullable: true })
+  @Column()
   capacity: number;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   wifi: boolean;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   AC: boolean;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   heater: boolean;
 
   @Column({ nullable: true })

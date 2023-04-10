@@ -48,7 +48,7 @@ export class ReservationController {
     @Param('id') id: string,
     @Body() updateReservationDto: UpdateReservationDto,
   ) {
-    await reserveValidator(updateReservationDto);
+    // await reserveValidator(updateReservationDto);
     return this.reservationService.update(+id, updateReservationDto);
   }
 

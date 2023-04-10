@@ -31,6 +31,14 @@ export class Reservation {
   @Column()
   balance_amount: number;
 
+  @Column()
+  note: number;
+
+  @Column({
+    enum: ['pending', 'confirmed', 'cancelled'],
+  })
+  status: string;
+
   @ManyToOne(() => Hotel, (hotel) => hotel.__reservations__)
   @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])
   __hotel__: Hotel;

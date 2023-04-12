@@ -20,4 +20,6 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   location: string;
+
+  role: string;
 }

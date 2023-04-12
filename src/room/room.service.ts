@@ -58,7 +58,6 @@ export class RoomService {
 
       return roomSave;
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -138,7 +137,7 @@ export class RoomService {
 
   async findOne(id: number) {
     try {
-      return await this.roomRepository.findOneOrFail({
+      const roomCancel = await this.roomRepository.findOne({
         where: {
           room_id: id,
           __hotel__: {
@@ -155,8 +154,26 @@ export class RoomService {
           __roomTypes__: true,
         },
       });
+
+      if (_.isNull(roomCancel)) {
+        return await this.roomRepository.findOneOrFail({
+          where: {
+            room_id: id,
+            __hotel__: {
+              __reservations__: true,
+            },
+          },
+          relations: {
+            __hotel__: {
+              __user__: true,
+              __reservations__: true,
+            },
+            __roomTypes__: true,
+          },
+        });
+      }
+      return roomCancel;
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -175,7 +192,6 @@ export class RoomService {
 
       return this.roomRepository.save(update);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -186,7 +202,6 @@ export class RoomService {
 
       return await this.roomRepository.remove(room);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

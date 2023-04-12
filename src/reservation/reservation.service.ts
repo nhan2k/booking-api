@@ -86,7 +86,6 @@ export class ReservationService {
 
       return await this.reservationRepository.save(newReservation);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -128,7 +127,6 @@ export class ReservationService {
         },
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -152,7 +150,6 @@ export class ReservationService {
 
       return await this.reservationRepository.save(update);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -163,7 +160,6 @@ export class ReservationService {
 
       return await this.reservationRepository.remove(hotel);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

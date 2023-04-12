@@ -21,21 +21,26 @@ export class UsersService {
     });
   }
 
+  async findById(id: number): Promise<any | undefined> {
+    return this.userRepository.findOne({
+      where: {
+        user_id: id,
+      },
+    });
+  }
+
   async register(createUserDto: CreateUserDto) {
     try {
       const saltRounds = 10;
       const salt = bcrypt.genSaltSync(saltRounds);
       const hash = bcrypt.hashSync(createUserDto.password, salt);
       // Store hash in your password DB.
-
       const newUser = this.userRepository.create({
         ...createUserDto,
         password: hash,
       });
-
       return await this.userRepository.save(newUser);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Credential invalid email or phone' },
         HttpStatus.BAD_REQUEST,
@@ -58,7 +63,6 @@ export class UsersService {
         select: ['email', 'first_name', 'last_name', 'location', 'role'],
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -77,7 +81,6 @@ export class UsersService {
 
       return await this.userRepository.save(update);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -88,7 +91,6 @@ export class UsersService {
 
       return await this.userRepository.remove(user);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

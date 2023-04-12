@@ -14,7 +14,6 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { UsersService } from './users/users.service';
 import { RoomService } from './room/room.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class AppController {
@@ -26,7 +25,9 @@ export class AppController {
   ) {}
 
   @Get()
-  getHello(): string {
+  // @Roles(Role.user)
+  @UseGuards(JwtAuthGuard)
+  getHello(@Request() req): string {
     return this.appService.getHello();
   }
 

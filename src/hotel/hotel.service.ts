@@ -46,7 +46,6 @@ export class HotelService {
       newHotel.__user__ = userFind;
       return await this.hotelsRepository.save(newHotel);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -70,7 +69,6 @@ export class HotelService {
         },
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -92,7 +90,6 @@ export class HotelService {
         },
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -115,7 +112,6 @@ export class HotelService {
         },
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -134,7 +130,6 @@ export class HotelService {
 
       return await this.hotelsRepository.save(update);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -145,7 +140,6 @@ export class HotelService {
 
       return await this.hotelsRepository.remove(hotel);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

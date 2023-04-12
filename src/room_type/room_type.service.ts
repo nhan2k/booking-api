@@ -29,7 +29,6 @@ export class RoomTypeService {
 
       return await this.roomTypeRepository.save(newRoomType);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -44,7 +43,6 @@ export class RoomTypeService {
         where: { room_type_id: id },
       });
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(
         { message: 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
@@ -66,7 +64,6 @@ export class RoomTypeService {
 
       return await this.roomTypeRepository.save(update);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -77,7 +74,6 @@ export class RoomTypeService {
 
       return await this.roomTypeRepository.remove(roomType);
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

@@ -26,7 +26,6 @@ export class ValidatorMiddleware implements NestMiddleware {
       console.log('Register Hotel');
       next();
     } catch (error) {
-      console.error(JSON.stringify(error, null, 4));
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }

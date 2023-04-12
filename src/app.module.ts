@@ -16,6 +16,8 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
 import { LoggerMiddleware } from './logger.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/role.guard';
 
 @Module({
   imports: [
@@ -73,7 +75,13 @@ import { LoggerMiddleware } from './logger.middleware';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

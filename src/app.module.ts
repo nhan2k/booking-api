@@ -18,6 +18,10 @@ import * as fs from 'fs';
 import { LoggerMiddleware } from './logger.middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/role.guard';
+import { PaypalModule } from './paypal/paypal.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -32,7 +36,6 @@ import { RolesGuard } from './auth/role.guard';
       entities: ['dist/**/*/*.entity.js'],
       synchronize: true,
     }),
-
     MulterModule.register({
       dest: './uploads',
       storage: diskStorage({
@@ -65,7 +68,7 @@ import { RolesGuard } from './auth/role.guard';
         },
       }),
     }),
-
+    ScheduleModule.forRoot(),
     HotelModule,
     RoomTypeModule,
     RoomModule,
@@ -73,6 +76,8 @@ import { RolesGuard } from './auth/role.guard';
     UsersModule,
     TransactionModule,
     AuthModule,
+    PaypalModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

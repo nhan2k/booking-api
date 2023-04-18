@@ -18,9 +18,14 @@ export class Transaction {
   amount: number;
 
   @Column({
-    enum: ['unpaid', 'paid', 'refuned'],
+    enum: ['unpaid', 'paid', 'refuned', 'completed'],
   })
   status: string;
+
+  @Column({
+    nullable: true,
+  })
+  paypal_transaction_id: string;
 
   @ManyToMany(() => Reservation, (reservation) => reservation.__transactions__)
   __reservations__: Promise<Reservation>;

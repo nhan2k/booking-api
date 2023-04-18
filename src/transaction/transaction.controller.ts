@@ -25,6 +25,11 @@ export class TransactionController {
     return this.transactionService.findAll();
   }
 
+  @Get('/admin')
+  adminFindAll() {
+    return this.transactionService.adminFindAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.transactionService.findOne(+id);
@@ -41,5 +46,10 @@ export class TransactionController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.transactionService.remove(+id);
+  }
+
+  @Post('/refund/:id')
+  refund(@Param('id') id: string) {
+    return this.transactionService.refund(+id);
   }
 }

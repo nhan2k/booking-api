@@ -34,7 +34,9 @@ export class RoomTypeService {
   }
 
   async findAll(): Promise<RoomType[]> {
-    return await this.roomTypeRepository.find();
+    return await this.roomTypeRepository.find({
+      order: { updated_at: 'DESC' },
+    });
   }
 
   async findOne(id: number): Promise<RoomType> {

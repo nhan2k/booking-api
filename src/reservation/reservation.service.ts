@@ -34,6 +34,7 @@ export class ReservationService {
       }
 
       const checkReservation = await this.reservationRepository.find({
+        order: { updated_at: 'DESC' },
         where: {
           __hotel__: {
             hotel_id: createReservationDto.hotel_id,
@@ -59,13 +60,13 @@ export class ReservationService {
         checkout: moment(createReservationDto.checkout)
           .add(12, 'hours')
           .toDate(),
-        created_at: moment(new Date()).add(12, 'hours').toDate(),
+        updated_at: moment(new Date()).add(12, 'hours').toDate(),
         note: createReservationDto.room_id,
         status: STATUS_RESERVE.confirmed,
       };
 
       const newReservation = this.reservationRepository.create(formatData);
-      const hotel = await this.hotelRepository.findOneOrFail({
+      const hotel = await this.hotelRepository.findOne({
         where: {
           hotel_id: formatData.hotel_id,
         },
@@ -74,7 +75,7 @@ export class ReservationService {
       transaction.amount = formatData.balance_amount;
       transaction.status = STATUS.unpaid;
 
-      const user = await this.userRepository.findOneOrFail({
+      const user = await this.userRepository.findOne({
         where: {
           user_id,
         },
@@ -91,19 +92,13 @@ export class ReservationService {
   }
 
   async findAll(user_id: number) {
-    if (!user_id) {
-      throw new HttpException(
-        { message: 'Could not find user' },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const response = await this.reservationRepository.find({
       where: {
         __user__: {
           user_id: user_id,
         },
       },
-      order: { created_at: 'DESC' },
+      order: { updated_at: 'DESC' },
       relations: {
         __hotel__: true,
         __transactions__: true,
@@ -116,7 +111,7 @@ export class ReservationService {
 
   async findOne(id: number) {
     try {
-      return await this.reservationRepository.findOneOrFail({
+      return await this.reservationRepository.findOne({
         where: {
           reservation_id: id,
         },
@@ -136,7 +131,11 @@ export class ReservationService {
 
   async update(id: number, updateReservationDto: UpdateReservationDto) {
     try {
-      let reservation: Reservation = await this.findOne(id);
+      let reservation: Reservation = await this.reservationRepository.findOne({
+        where: {
+          reservation_id: id,
+        },
+      });
 
       let update = {
         ...reservation,
@@ -162,5 +161,19 @@ export class ReservationService {
     } catch (error) {
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  // Admin
+  async adminFindAll() {
+    const response = await this.reservationRepository.find({
+      order: { updated_at: 'DESC' },
+      relations: {
+        __hotel__: true,
+        __transactions__: true,
+        __user__: true,
+      },
+    });
+
+    return response;
   }
 }

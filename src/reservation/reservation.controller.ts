@@ -38,6 +38,12 @@ export class ReservationController {
     return this.reservationService.findAll(req.user.userId);
   }
 
+  // Admin
+  @Get('/admin')
+  async getAll() {
+    return await this.reservationService.adminFindAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationService.findOne(+id);

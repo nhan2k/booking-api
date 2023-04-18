@@ -64,7 +64,7 @@ export class RoomService {
 
   async findAll(user_id: number) {
     return await this.roomRepository.find({
-      order: { created_at: 'DESC' },
+      order: { updated_at: 'DESC' },
       where: {
         __hotel__: {
           __user__: {
@@ -123,6 +123,7 @@ export class RoomService {
 
   async findRoomsById(hotel_id: number) {
     return await this.roomRepository.find({
+      order: { updated_at: 'DESC' },
       where: {
         __hotel__: {
           hotel_id,

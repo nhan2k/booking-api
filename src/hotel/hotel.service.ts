@@ -52,6 +52,7 @@ export class HotelService {
 
   async findAll(): Promise<Hotel[]> {
     return await this.hotelsRepository.find({
+      order: { updated_at: 'DESC' },
       relations: {
         __reservations__: true,
         rooms: true,
@@ -79,6 +80,7 @@ export class HotelService {
   async findMyHotel(user: any): Promise<Hotel[]> {
     try {
       return await this.hotelsRepository.find({
+        order: { updated_at: 'DESC' },
         where: {
           __user__: {
             user_id: user.userId,

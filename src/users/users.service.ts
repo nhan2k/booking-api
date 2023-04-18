@@ -50,6 +50,7 @@ export class UsersService {
 
   findAll() {
     return this.userRepository.find({
+      order: { updated_at: 'DESC' },
       relations: {
         __reservations__: true,
       },

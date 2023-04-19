@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { RoomType } from 'src/room_type/entities/room_type.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { In, MoreThan, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
@@ -156,10 +156,11 @@ export class RoomService {
           room_id: id,
           __hotel__: {
             __reservations__: {
-              status: STATUS.cancelled,
+              status: In(['pending', 'confirmed', 'completed']),
             },
           },
         },
+
         relations: {
           __hotel__: {
             __user__: true,

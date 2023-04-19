@@ -5,8 +5,10 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { STATUS } from './enum';
+import { STATUS as STATUS_RESERVE } from 'src/reservation/enum';
 import axios from 'axios';
 import { Paypal } from 'src/paypal/entities/paypal.entity';
+import { Reservation } from 'src/reservation/entities/reservation.entity';
 
 @Injectable()
 export class TransactionService {
@@ -15,6 +17,8 @@ export class TransactionService {
     private transactionRepository: Repository<Transaction>,
     @InjectRepository(Paypal)
     private paypalRepository: Repository<Paypal>,
+    @InjectRepository(Reservation)
+    private reservationRepository: Repository<Reservation>,
   ) {}
 
   async create(createTransactionDto: CreateTransactionDto) {
@@ -104,7 +108,7 @@ export class TransactionService {
 
   async refund(id: number) {
     try {
-      let transaction = await this.findOne(id);
+      const transaction = await this.findOne(id);
       const paypal = await this.paypalRepository.findOne({
         where: {
           id: 1,
@@ -128,11 +132,36 @@ export class TransactionService {
         },
       );
 
-      let update = {
+      const update = {
         ...transaction,
         status: STATUS.refunded,
       };
+      const reservation = await this.reservationRepository.findOne({
+        where: {
+          reservation_id: (
+            await transaction.__reservations__
+          )[0].reservation_id,
+        },
+      });
 
+      if (!reservation) {
+        throw new HttpException(
+          { message: 'Reservation not found' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      console.log(
+        '🚀 ~ file: transaction.service.ts:144 ~ TransactionService ~ refund ~ reservation:',
+        reservation,
+      );
+
+      reservation.status = STATUS_RESERVE.cancelled;
+      console.log(
+        '🚀 ~ file: transaction.service.ts:144 ~ TransactionService ~ refund ~ reservation:',
+        reservation,
+      );
+
+      await this.reservationRepository.save(reservation);
       return await this.transactionRepository.save(update);
     } catch (error) {
       throw new HttpException(

@@ -35,7 +35,7 @@ export class Reservation {
   note: number;
 
   @Column({
-    enum: ['pending', 'confirmed', 'cancelled'],
+    enum: ['pending', 'confirmed', 'cancelled', 'completed'],
   })
   status: string;
 

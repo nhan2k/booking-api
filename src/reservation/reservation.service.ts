@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
-import { LessThan, MoreThan, Repository } from 'typeorm';
+import { In, LessThan, MoreThan, Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation } from './entities/reservation.entity';
@@ -39,7 +39,7 @@ export class ReservationService {
           __hotel__: {
             hotel_id: createReservationDto.hotel_id,
           },
-          status: STATUS_RESERVE.cancelled,
+          status: In(['pending', 'confirmed', 'completed']),
           check_in: LessThan(createReservationDto.checkout),
           checkout: MoreThan(createReservationDto.check_in),
         },

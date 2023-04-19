@@ -4,9 +4,10 @@ import { TransactionController } from './transaction.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { Paypal } from 'src/paypal/entities/paypal.entity';
+import { Reservation } from 'src/reservation/entities/reservation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transaction, Paypal])],
+  imports: [TypeOrmModule.forFeature([Transaction, Paypal,Reservation])],
   controllers: [TransactionController],
   providers: [TransactionService],
 })

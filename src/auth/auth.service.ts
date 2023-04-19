@@ -41,10 +41,7 @@ export class AuthService {
     const payload = { email: user.email, sub: user.user_id, role: user.role };
     const { user_id, password, created_at, updated_at, deleted_at, ...rest } =
       user;
-    console.log(
-      '🚀 ~ file: auth.service.ts:43 ~ AuthService ~ login ~ payload:',
-      payload,
-    );
+
     const options: JwtSignOptions = {
       expiresIn: '7d',
     };

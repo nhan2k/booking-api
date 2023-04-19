@@ -28,7 +28,7 @@ export class Transaction {
   paypal_transaction_id: string;
 
   @ManyToMany(() => Reservation, (reservation) => reservation.__transactions__)
-  __reservations__: Promise<Reservation>;
+  __reservations__: Promise<Reservation[]>;
 
   @CreateDateColumn()
   created_at: Date; // Creation date

@@ -122,7 +122,15 @@ export class RoomService {
   }
 
   async findRoomsById(hotel_id: number) {
-    return await this.roomRepository.find({
+    const hotel = await this.hotelRepository.findOne({
+      where: {
+        hotel_id,
+      },
+      select: {
+        hotel_name: true,
+      },
+    });
+    const rooms = await this.roomRepository.findAndCount({
       order: { updated_at: 'DESC' },
       where: {
         __hotel__: {
@@ -134,6 +142,11 @@ export class RoomService {
         __roomTypes__: true,
       },
     });
+
+    return {
+      hotel,
+      rooms,
+    };
   }
 
   async findOne(id: number) {

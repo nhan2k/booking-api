@@ -22,4 +22,6 @@ export class CreateUserDto {
   location: string;
 
   role: string;
+
+  imgPath: string;
 }

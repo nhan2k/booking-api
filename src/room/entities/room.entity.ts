@@ -11,6 +11,7 @@ import {
   DeleteDateColumn,
   JoinColumn,
   ManyToMany,
+  OneToOne,
 } from 'typeorm';
 
 @Entity()
@@ -32,14 +33,19 @@ export class Room {
   @Column()
   imgPath: string;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
+  @Column({
+    nullable: true,
+    enum: ['pending', 'published', 'concealed'],
+    default: 'pending',
+  })
+  status: string;
+
+  @ManyToOne(() => Hotel, (hotel) => hotel.__rooms__)
   @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])
   __hotel__: Hotel;
 
-  @ManyToMany(() => RoomType, (roomType) => roomType.__rooms__, {
-    cascade: true,
-  })
-  __roomTypes__: Promise<RoomType[]>;
+  @OneToOne(() => RoomType, (roomType) => roomType.__room__)
+  __roomType__: RoomType;
 
   @CreateDateColumn()
   created_at: Date; // Creation date

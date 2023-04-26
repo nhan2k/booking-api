@@ -38,7 +38,7 @@ export class Hotel {
   @OneToMany(() => Room, (room) => room.__hotel__, {
     cascade: true,
   })
-  rooms: Room[];
+  __rooms__: Room[];
 
   @OneToMany(() => Reservation, (reservation) => reservation.__hotel__, {
     cascade: true,

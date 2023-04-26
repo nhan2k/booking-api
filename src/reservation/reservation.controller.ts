@@ -8,6 +8,7 @@ import {
   Delete,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -34,8 +35,15 @@ export class ReservationController {
   }
 
   @Get()
-  findAll(@Request() req) {
-    return this.reservationService.findAll(req.user.userId);
+  findAll(
+    @Request() req,
+    @Query()
+    filter: {
+      pageSize?: number;
+      pageNumber?: number;
+    },
+  ) {
+    return this.reservationService.findAll(req.user.userId, filter);
   }
 
   // Admin

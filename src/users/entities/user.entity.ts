@@ -2,6 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import * as moment from 'moment';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
+import { Review } from 'src/review/entities/review.entity';
 import {
   Column,
   CreateDateColumn,
@@ -15,10 +16,6 @@ import {
 
 @Entity()
 export class User {
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
-  }
-
   @PrimaryGeneratedColumn()
   user_id: number;
 
@@ -32,7 +29,6 @@ export class User {
   email: string;
 
   @Column()
-  @Exclude()
   password: string;
 
   @Column({ unique: true })
@@ -44,10 +40,15 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
+  @Column({ nullable: true })
+  imgPath: string;
+
   @OneToMany(() => Reservation, (reservation) => reservation.__user__, {
     cascade: true,
   })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'user_id' }])
+  @JoinColumn([
+    { name: 'reservation_id', referencedColumnName: 'reservation_id' },
+  ])
   __reservations__: Reservation[];
 
   @OneToMany(() => Hotel, (hotel) => hotel.__user__, {
@@ -55,6 +56,12 @@ export class User {
   })
   @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])
   __hotels__: Hotel[];
+
+  @OneToMany(() => Review, (review) => review.__user__, {
+    cascade: true,
+  })
+  @JoinColumn([{ name: 'review_id', referencedColumnName: 'review_id' }])
+  __reviews__: Review[];
 
   @CreateDateColumn()
   created_at: Date; // Creation date

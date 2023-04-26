@@ -31,14 +31,6 @@ import * as fs from 'fs';
             return callback(null, `hotel/${name}-${randomName}${fileExtName}`);
           }
 
-          if (req.url.includes('room')) {
-            const folderName = './uploads/room';
-
-            if (!fs.existsSync(folderName)) {
-              fs.mkdirSync(folderName);
-            }
-            return callback(null, `room/${name}-${randomName}${fileExtName}`);
-          }
           callback(null, `${name}-${randomName}${fileExtName}`);
         },
       }),

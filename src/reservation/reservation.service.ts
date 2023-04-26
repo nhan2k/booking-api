@@ -10,6 +10,7 @@ import { Reservation } from './entities/reservation.entity';
 import * as moment from 'moment';
 import { STATUS } from 'src/transaction/enum';
 import { STATUS as STATUS_RESERVE } from './enum/index';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ReservationService {
@@ -91,11 +92,21 @@ export class ReservationService {
     }
   }
 
-  async findAll(user_id: number) {
-    const response = await this.reservationRepository.find({
+  async findAll(
+    user_id: number,
+    filter: {
+      pageSize?: number;
+      pageNumber?: number;
+    },
+  ) {
+    const { pageNumber, pageSize } = filter;
+
+    const response = await this.reservationRepository.findAndCount({
+      skip: (pageNumber - 1) * pageSize,
+      take: pageSize,
       where: {
         __user__: {
-          user_id: user_id,
+          user_id,
         },
       },
       order: { updated_at: 'DESC' },

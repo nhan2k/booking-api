@@ -1,4 +1,5 @@
 import { Hotel } from 'src/hotel/entities/hotel.entity';
+import { Review } from 'src/review/entities/review.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -10,6 +11,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -39,6 +41,9 @@ export class Reservation {
   })
   status: string;
 
+  @Column({ type: 'boolean', default: false })
+  is_reviewed: boolean;
+
   @ManyToOne(() => Hotel, (hotel) => hotel.__reservations__)
   @JoinColumn([{ name: 'hotel_id', referencedColumnName: 'hotel_id' }])
   __hotel__: Hotel;
@@ -66,6 +71,9 @@ export class Reservation {
     },
   })
   __transactions__: Promise<Transaction[]>;
+
+  @OneToOne(() => Review, (review) => review.__reservation__)
+  __review__: Review;
 
   @CreateDateColumn()
   created_at: Date; // Creation date

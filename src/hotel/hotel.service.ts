@@ -55,7 +55,7 @@ export class HotelService {
       order: { updated_at: 'DESC' },
       relations: {
         __reservations__: true,
-        rooms: true,
+        __rooms__: true,
       },
     });
   }
@@ -66,7 +66,7 @@ export class HotelService {
         where: { hotel_id: id },
         relations: {
           __reservations__: true,
-          rooms: true,
+          __rooms__: true,
         },
       });
     } catch (error) {
@@ -88,7 +88,7 @@ export class HotelService {
         },
         relations: {
           __reservations__: true,
-          rooms: true,
+          __rooms__: true,
         },
       });
     } catch (error) {
@@ -110,7 +110,7 @@ export class HotelService {
         },
         relations: {
           __reservations__: true,
-          rooms: true,
+          __rooms__: true,
         },
       });
     } catch (error) {

@@ -1,12 +1,16 @@
 import * as moment from 'moment';
+import { Review } from 'src/review/entities/review.entity';
 import { Room } from 'src/room/entities/room.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,19 +41,16 @@ export class RoomType {
   @Column({ nullable: true })
   other_facilities: string;
 
-  @ManyToMany(() => Room, (room) => room.__roomTypes__)
-  @JoinTable({
-    name: 'room_type_rooms',
-    joinColumn: {
-      name: 'room_type_id',
-      referencedColumnName: 'room_type_id',
-    },
-    inverseJoinColumn: {
-      name: 'room_id',
-      referencedColumnName: 'room_id',
-    },
+  @OneToOne(() => Room, (room) => room.__roomType__, {
+    cascade: true,
   })
-  __rooms__: Promise<Room[]>;
+  @JoinColumn({
+    name: 'room_id',
+  })
+  __room__: Room;
+
+  @OneToMany(() => Review, (review) => review.__roomType__)
+  __reviews__: Review[];
 
   @CreateDateColumn()
   created_at: Date; // Creation date

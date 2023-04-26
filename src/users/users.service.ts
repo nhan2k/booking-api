@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -61,7 +62,15 @@ export class UsersService {
     try {
       return await this.userRepository.findOne({
         where: { user_id: user.userId },
-        select: ['email', 'first_name', 'last_name', 'location', 'role'],
+        select: [
+          'email',
+          'first_name',
+          'last_name',
+          'location',
+          'role',
+          'imgPath',
+          'phone_number',
+        ],
       });
     } catch (error) {
       throw new HttpException(
@@ -71,17 +80,38 @@ export class UsersService {
     }
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async updateProfile(
+    req: Request,
+    updateUserDto: UpdateUserDto,
+    file: Express.Multer.File,
+  ) {
     try {
-      const user: User = await this.findOne(id);
+      const user: User = await this.userRepository.findOne({
+        where: {
+          user_id: (req.user as any)?.userId,
+        },
+      });
+      if (!user) {
+        throw new HttpException(
+          { message: 'User not found' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-      const update = {
+      if (file?.path) {
+        user.imgPath = file.path;
+      }
+      let update = {
         ...user,
         ...updateUserDto,
       };
 
       return await this.userRepository.save(update);
     } catch (error) {
+      console.log(
+        '🚀 ~ file: users.service.ts:107 ~ UsersService ~ error:',
+        error,
+      );
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

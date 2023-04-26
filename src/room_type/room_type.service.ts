@@ -25,11 +25,14 @@ export class RoomTypeService {
         },
       });
 
-      (await newRoomType.__rooms__).push(room);
+      newRoomType.__room__ = room;
 
       return await this.roomTypeRepository.save(newRoomType);
     } catch (error) {
-      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: (error as Error).message || error },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -46,7 +49,7 @@ export class RoomTypeService {
       });
     } catch (error) {
       throw new HttpException(
-        { message: 'Could not find entity' },
+        { message: (error as Error).message || 'Could not find entity' },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -66,7 +69,10 @@ export class RoomTypeService {
 
       return await this.roomTypeRepository.save(update);
     } catch (error) {
-      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: (error as Error).message || error },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -76,7 +82,10 @@ export class RoomTypeService {
 
       return await this.roomTypeRepository.remove(roomType);
     } catch (error) {
-      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: (error as Error).message || error },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

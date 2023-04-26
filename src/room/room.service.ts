@@ -2,12 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { RoomType } from 'src/room_type/entities/room_type.entity';
-import { In, MoreThan, Repository } from 'typeorm';
+import { In, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 import * as _ from 'lodash';
-import { STATUS } from 'src/reservation/enum';
+import { Status } from './enum';
 
 @Injectable()
 export class RoomService {
@@ -31,11 +31,13 @@ export class RoomService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      const newRoom = new Room();
-      newRoom.capacity = createRoomDto.capacity;
-      newRoom.prize = createRoomDto.prize;
-      newRoom.facilities = createRoomDto.facilities;
-      newRoom.imgPath = file.path;
+
+      const newRoom = this.roomRepository.create({
+        capacity: createRoomDto.capacity,
+        prize: createRoomDto.prize,
+        facilities: createRoomDto.facilities,
+        imgPath: file.path,
+      });
 
       const hotel = await this.hotelRepository.findOneOrFail({
         where: {
@@ -43,17 +45,18 @@ export class RoomService {
         },
       });
 
-      const roomTypes = new RoomType();
-      roomTypes.capacity = createRoomDto.capacity;
-      roomTypes.prize = createRoomDto.prize;
-      roomTypes.AC = createRoomDto.AC;
-      roomTypes.heater = createRoomDto.heater;
-      roomTypes.other_facilities = createRoomDto.other_facilities;
-      roomTypes.wifi = createRoomDto.wifi;
-      await this.roomTypeRepository.save(roomTypes);
+      const newRoomType = this.roomTypeRepository.create({
+        capacity: createRoomDto.capacity,
+        prize: createRoomDto.prize,
+        AC: createRoomDto.AC,
+        heater: createRoomDto.heater,
+        other_facilities: createRoomDto.other_facilities,
+        wifi: createRoomDto.wifi,
+      });
 
+      newRoomType.__room__ = newRoom;
+      await this.roomTypeRepository.save(newRoomType);
       newRoom.__hotel__ = hotel;
-      (await newRoom.__roomTypes__).push(roomTypes);
       const roomSave = await this.roomRepository.save(newRoom);
 
       return roomSave;
@@ -71,10 +74,11 @@ export class RoomService {
             user_id,
           },
         },
+        status: Status.published,
       },
       relations: {
         __hotel__: true,
-        __roomTypes__: true,
+        __roomType__: true,
       },
     });
   }
@@ -101,12 +105,13 @@ export class RoomService {
             province: filter.province.length > 0 ? filter.province : '',
           },
           capacity: !isNaN(Number(filter.traveller))
-            ? MoreThan(filter.traveller)
+            ? MoreThanOrEqual(filter.traveller)
             : MoreThan(0),
+          status: Status.published,
         },
         relations: {
           __hotel__: true,
-          __roomTypes__: true,
+          __roomType__: true,
         },
       });
     }
@@ -116,7 +121,10 @@ export class RoomService {
       order: { created_at: 'DESC' },
       relations: {
         __hotel__: true,
-        __roomTypes__: true,
+        __roomType__: true,
+      },
+      where: {
+        status: Status.published,
       },
     });
   }
@@ -136,10 +144,11 @@ export class RoomService {
         __hotel__: {
           hotel_id,
         },
+        status: Status.published,
       },
       relations: {
         __hotel__: true,
-        __roomTypes__: true,
+        __roomType__: true,
       },
     });
 
@@ -159,14 +168,14 @@ export class RoomService {
               status: In(['pending', 'confirmed', 'completed']),
             },
           },
+          status: Status.published,
         },
-
         relations: {
           __hotel__: {
             __user__: true,
             __reservations__: true,
           },
-          __roomTypes__: true,
+          __roomType__: true,
         },
       });
 
@@ -177,13 +186,14 @@ export class RoomService {
             __hotel__: {
               __reservations__: true,
             },
+            status: Status.published,
           },
           relations: {
             __hotel__: {
               __user__: true,
               __reservations__: true,
             },
-            __roomTypes__: true,
+            __roomType__: true,
           },
         });
       }

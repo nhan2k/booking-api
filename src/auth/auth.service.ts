@@ -38,7 +38,12 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.user_id, role: user.role };
+    const payload = {
+      email: user.email,
+      sub: user.user_id,
+      role: user.role,
+      imgPath: user.img_path,
+    };
     const { user_id, password, created_at, updated_at, deleted_at, ...rest } =
       user;
 
@@ -46,24 +51,28 @@ export class AuthService {
       expiresIn: '7d',
     };
     const optionsRefresh: JwtSignOptions = {
-      expiresIn: '14d',
+      expiresIn: '30d',
     };
     return {
-      access_token: this.jwtService.sign(payload, options),
-      refresh_token: this.jwtService.sign(payload, optionsRefresh),
+      access_token: await this.generateAccessToken(payload, options),
+      refresh_token: await this.generateRefreshToken(payload, optionsRefresh),
       user: rest,
     };
   }
 
-  async generateAccessToken(payload: ITokenPayload): Promise<string> {
-    const accessToken = await this.jwtService.signAsync(payload);
+  async generateAccessToken(
+    payload: ITokenPayload,
+    options?: JwtSignOptions,
+  ): Promise<string> {
+    const accessToken = await this.jwtService.signAsync(payload, options);
     return accessToken;
   }
 
-  async generateRefreshToken(payload: ITokenPayload): Promise<string> {
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
-    });
+  async generateRefreshToken(
+    payload: ITokenPayload,
+    options?: JwtSignOptions,
+  ): Promise<string> {
+    const refreshToken = await this.jwtService.signAsync(payload, options);
     return refreshToken;
   }
 
@@ -75,35 +84,5 @@ export class AuthService {
   async verifyRefreshToken(token: string): Promise<ITokenPayload> {
     const payload = await this.jwtService.verifyAsync(token);
     return payload;
-  }
-
-  async refreshToken(refreshTokenDto: { refreshToken: string }): Promise<any> {
-    const token = await this.verifyRefreshToken(refreshTokenDto.refreshToken);
-
-    if (!token) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const user = await this.usersService.findById(token.sub);
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const payload: ITokenPayload = {
-      sub: user.id,
-      email: user.email,
-      role: user.roles,
-    };
-    const options: JwtSignOptions = {
-      expiresIn: '7d',
-    };
-    const optionsRefresh: JwtSignOptions = {
-      expiresIn: '14d',
-    };
-    const access_token = this.jwtService.sign(payload, options);
-    const refresh_token = this.jwtService.sign(payload, optionsRefresh);
-
-    return { access_token, refresh_token };
   }
 }

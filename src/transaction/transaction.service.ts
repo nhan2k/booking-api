@@ -150,16 +150,6 @@ export class TransactionService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      console.log(
-        '🚀 ~ file: transaction.service.ts:144 ~ TransactionService ~ refund ~ reservation:',
-        reservation,
-      );
-
-      reservation.status = STATUS_RESERVE.cancelled;
-      console.log(
-        '🚀 ~ file: transaction.service.ts:144 ~ TransactionService ~ refund ~ reservation:',
-        reservation,
-      );
 
       await this.reservationRepository.save(reservation);
       return await this.transactionRepository.save(update);

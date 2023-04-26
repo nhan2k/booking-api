@@ -22,6 +22,7 @@ import { PaypalModule } from './paypal/paypal.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TasksModule } from './tasks/tasks.module';
             .fill(null)
             .map(() => Math.round(Math.random() * 16).toString(16))
             .join('');
+          console.log('🚀 ~ file: app.module.ts:68 ~ req.url:', req.url);
           if (req.url.includes('hotel')) {
             const folderName = './uploads/hotel';
 
@@ -64,6 +66,14 @@ import { TasksModule } from './tasks/tasks.module';
             }
             return callback(null, `room/${name}-${randomName}${fileExtName}`);
           }
+          if (req.url.includes('user')) {
+            const folderName = './uploads/user';
+
+            if (!fs.existsSync(folderName)) {
+              fs.mkdirSync(folderName);
+            }
+            return callback(null, `user/${name}-${randomName}${fileExtName}`);
+          }
           callback(null, `${name}-${randomName}${fileExtName}`);
         },
       }),
@@ -78,6 +88,7 @@ import { TasksModule } from './tasks/tasks.module';
     AuthModule,
     PaypalModule,
     TasksModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [

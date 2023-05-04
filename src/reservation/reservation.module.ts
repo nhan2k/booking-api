@@ -7,9 +7,10 @@ import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Hotel } from 'src/hotel/entities/hotel.entity';
 import { User } from 'src/users/entities/user.entity';
 import { APP_PIPE } from '@nestjs/core';
+import { Paypal } from 'src/paypal/entities/paypal.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Reservation, Transaction, Hotel, User])],
+  imports: [TypeOrmModule.forFeature([Reservation, Transaction, Hotel, User,Paypal])],
   controllers: [ReservationController],
   providers: [
     ReservationService,

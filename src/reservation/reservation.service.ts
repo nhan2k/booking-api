@@ -11,6 +11,8 @@ import * as moment from 'moment';
 import { STATUS } from 'src/transaction/enum';
 import { STATUS as STATUS_RESERVE } from './enum/index';
 import * as _ from 'lodash';
+import { Paypal } from 'src/paypal/entities/paypal.entity';
+import axios from 'axios';
 
 @Injectable()
 export class ReservationService {
@@ -23,6 +25,8 @@ export class ReservationService {
     private transactionRepository: Repository<Transaction>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Paypal)
+    private paypalRepository: Repository<Paypal>,
   ) {}
 
   async create(createReservationDto: CreateReservationDto, user_id: number) {
@@ -44,6 +48,7 @@ export class ReservationService {
           check_in: LessThan(createReservationDto.checkout),
           checkout: MoreThan(createReservationDto.check_in),
         },
+        transaction: true,
       });
 
       if (checkReservation.length > 0) {
@@ -71,24 +76,36 @@ export class ReservationService {
         where: {
           hotel_id: formatData.hotel_id,
         },
+        transaction: true,
       });
-      const transaction = new Transaction();
-      transaction.amount = formatData.balance_amount;
-      transaction.status = STATUS.unpaid;
+      const newTransaction = new Transaction();
+      newTransaction.amount = formatData.balance_amount;
+      newTransaction.status = STATUS.paid;
 
       const user = await this.userRepository.findOne({
         where: {
           user_id,
         },
+        transaction: true,
       });
+      const transaction = await this.transactionRepository.save(
+        newTransaction,
+        { transaction: true },
+      );
 
       newReservation.__hotel__ = hotel;
-      (await newReservation.__transactions__).push(transaction);
+      newReservation.__transactions__ = [newTransaction];
       newReservation.__user__ = user;
 
-      return await this.reservationRepository.save(newReservation);
+      await this.reservationRepository.save(newReservation, {
+        transaction: true,
+      });
+      return transaction.transaction_id;
     } catch (error) {
-      throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: error || 'Reservation Fail' },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

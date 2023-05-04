@@ -144,7 +144,7 @@ export class RoomService {
         __hotel__: {
           hotel_id,
         },
-        status: Status.published,
+        // status: Status.published,
       },
       relations: {
         __hotel__: true,

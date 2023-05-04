@@ -10,6 +10,7 @@ import {
   Request,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
@@ -38,13 +39,20 @@ export class HotelController {
   }
 
   @Get('my')
-  async findMyHotel(@Request() req) {
-    return await this.hotelService.findMyHotel(req.user);
+  async findMyHotel(
+    @Request() req,
+    @Query()
+    filter: {
+      pageSize?: number;
+      pageNumber?: number;
+    },
+  ) {
+    return await this.hotelService.findMyHotel(req.user.userId, filter);
   }
 
   @Get('my/:hotel_id')
   async findMyHotelById(@Request() req, @Param('hotel_id') hotel_id: number) {
-    return await this.hotelService.findMyHotelById(req.user, hotel_id);
+    return await this.hotelService.findMyHotelById(req.user.userId, hotel_id);
   }
 
   @Get(':id')

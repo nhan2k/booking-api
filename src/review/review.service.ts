@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
 import { RoomType } from 'src/room_type/entities/room_type.entity';
+import * as _ from 'lodash';
 
 @Injectable()
 export class ReviewService {
@@ -23,6 +24,10 @@ export class ReviewService {
 
   async create(createReviewDto: CreateReviewDto, user_id: number) {
     try {
+      console.log(
+        '🚀 ~ file: review.service.ts:53 ~ ReviewService ~ create ~ createReviewDto.room_type_id:',
+        createReviewDto.room_type_id,
+      );
       const reservation = await this.reservationRepository.findOne({
         where: {
           reservation_id: createReviewDto.reservation_id,
@@ -39,7 +44,7 @@ export class ReviewService {
           user_id,
         },
       });
-      if (!user) {
+      if (!user || user.role !== 'user') {
         throw new HttpException(
           { message: 'Not Found User' },
           HttpStatus.BAD_REQUEST,
@@ -66,7 +71,35 @@ export class ReviewService {
 
       reservation.is_reviewed = true;
       await this.reservationRepository.save(reservation);
-      return await this.reviewRepository.save(newReview);
+
+      const response = await this.reviewRepository.save(newReview);
+      const allRatings = await this.reviewRepository.find({
+        where: {
+          __roomType__: {
+            room_type_id: createReviewDto.room_type_id,
+          },
+        },
+        select: {
+          __roomType__: {
+            rating: true,
+          },
+        },
+      });
+
+      const ratings = allRatings.map((review) => review.rating);
+      const averageRating = _.mean(ratings);
+
+      if (!isNaN(averageRating)) {
+        if (averageRating - Math.floor(averageRating) > 0.5) {
+          roomType.rating = Math.ceil(averageRating);
+          await this.roomTypeRepository.save(roomType);
+        } else {
+          roomType.rating = Math.floor(averageRating);
+          await this.roomTypeRepository.save(roomType);
+        }
+      }
+
+      return response;
     } catch (error) {
       throw new HttpException(
         { message: `Create Review Fail! ${error}` },
@@ -76,18 +109,26 @@ export class ReviewService {
   }
 
   async findAll(room_id: number) {
-    return await this.reviewRepository.findAndCount({
-      where: {
-        __roomType__: {
-          __room__: {
-            room_id,
+    try {
+      return await this.reviewRepository.findAndCount({
+        where: {
+          __roomType__: {
+            room_type_id: room_id,
           },
         },
-      },
-      relations: {
-        __user__: true,
-      },
-    });
+        relations: {
+          __user__: true,
+        },
+        order: {
+          updated_at: 'DESC',
+        },
+      });
+    } catch (error) {
+      throw new HttpException(
+        { message: `Get Review Fail! ${error}` },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   findOne(id: number) {

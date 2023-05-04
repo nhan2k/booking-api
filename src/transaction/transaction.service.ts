@@ -5,7 +5,6 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { STATUS } from './enum';
-import { STATUS as STATUS_RESERVE } from 'src/reservation/enum';
 import axios from 'axios';
 import { Paypal } from 'src/paypal/entities/paypal.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
@@ -86,12 +85,15 @@ export class TransactionService {
 
       let update = {
         ...transaction,
-        status: STATUS.paid,
         paypal_transaction_id,
       };
 
       return await this.transactionRepository.save(update);
     } catch (error) {
+      console.log(
+        '🚀 ~ file: transaction.service.ts:100 ~ TransactionService ~ update ~ error:',
+        error,
+      );
       throw new HttpException({ message: error }, HttpStatus.BAD_REQUEST);
     }
   }

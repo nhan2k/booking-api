@@ -77,13 +77,22 @@ export class HotelService {
     }
   }
 
-  async findMyHotel(user: any): Promise<Hotel[]> {
+  async findMyHotel(
+    user_id: number,
+    filter: {
+      pageSize?: number;
+      pageNumber?: number;
+    },
+  ): Promise<any> {
     try {
-      return await this.hotelsRepository.find({
+      const { pageNumber = 1, pageSize = 10 } = filter;
+      return await this.hotelsRepository.findAndCount({
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
         order: { updated_at: 'DESC' },
         where: {
           __user__: {
-            user_id: user.userId,
+            user_id,
           },
         },
         relations: {
@@ -99,12 +108,12 @@ export class HotelService {
     }
   }
 
-  async findMyHotelById(user: any, hotel_id: number): Promise<Hotel> {
+  async findMyHotelById(user_id: number, hotel_id: number): Promise<Hotel> {
     try {
       return await this.hotelsRepository.findOne({
         where: {
           __user__: {
-            user_id: user.userId,
+            user_id,
           },
           hotel_id: hotel_id,
         },

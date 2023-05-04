@@ -70,7 +70,7 @@ export class Reservation {
       referencedColumnName: 'transaction_id',
     },
   })
-  __transactions__: Promise<Transaction[]>;
+  __transactions__: Transaction[];
 
   @OneToOne(() => Review, (review) => review.__reservation__)
   __review__: Review;
